@@ -24,4 +24,4 @@ WORKDIR /work
 COPY ./build/libs/SSO_Auth-0.0.1.jar /work/SSO_Auth-0.0.1.jar
 
 # JAR 파일을 실행
-ENTRYPOINT ["java", "-jar", "/work/SSO_Auth-0.0.1.jar"]
+ENTRYPOINT ["java", "-jar", "/work/Bridge_Auth-0.0.1.jar"]
