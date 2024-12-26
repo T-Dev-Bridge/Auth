@@ -6,7 +6,7 @@ build/
 !**/src/test/**/build/
 
 src/test/*
-src/main/resources/application.yml
+#src/main/resources/application.yml
 
 libs/
 

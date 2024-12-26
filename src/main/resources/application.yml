@@ -1,0 +1,75 @@
+server:
+  port: 8001
+
+spring:
+  cloud:
+    config:
+      name: auth
+    openfeign:
+      loadbalancer:
+        ribbon:
+        enable: false
+  application:
+    name: auth
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${db.ip}:${db.port}/${db.database}?currentSchema=${db.schema}
+    username: ${db.username}
+    password: ${db.password}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+db:
+  ip: localhost
+  port: 5432
+  database: postgres
+  username: postgres
+  password: 1234asd
+  schema: auth
+
+security:
+  access-token-exp: 300000
+  refresh-token-exp: 86400000
+  accept-leeway: 0
+
+# Resilience4j 분산 시스템 환경에서 장애에 대응하기 위한 라이브러리
+# CircuitBreaker가 모듈로 속한다.
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 3 # 최대 3번 재시도를 수행한다.
+      waitDuration: 1000 # 재시도 사이에 1초의 간격을 갖는다.
+      retryExceptions:
+        - com.bridge.auth.exception.RecordException # 해당 Exception이 발생하면 재시도를 수행한다.
+      ignoreExceptions:
+        - com.bridge.auth.exception.IgnoreException # 해당 Exception이 발생하면 재시도를 수행하지 않는다.
+  instances:
+    simpleRetryConfig:
+      baseConfig: default
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowType: COUNT_BASED
+      minimumNumberOfCalls: 7 # 최소 7번까지 CLOSE로 가정하고 호출
+      slidingWindowSize: 10 # 10개의 요청을 기준으로 판단
+      waitDurationInOpenState: 10s # 10초 뒤에 OPEN 상태에서 HALF_OPEN으로
+      failureRateThreshold: 40 # slidingWindowSize 중 40%가 recordException이면 OPEN
+      slowCallDurationThreshold: 3000 # 3초 동안 요청이 처리되지 않으면 실패로 간주
+      slowCallRateThreshold: 60 # slidingWindowSize 중 60%가 slowCall이면 OPEN
+      permittedNumberOfCallsInHalfOpenState: 5 # ALF_OPEN 상태에서 5번까지 CLOSE로 변경하기 위한 호출
+      automaticTransitionFromOpenToHalfOpenEnabled: true # OPEN 상태에서 자동으로 HALF_OPEN으로 변경
+      eventConsumerBufferSize: 10 # actuator를 위한 이벤트 버퍼 사이즈
+      recordExceptions:
+        - com.bridge.auth.exception.RecordException
+      ignoreExceptions:
+        - com.bridge.auth.exception.IgnoreException
+  instances:
+    basicCircuitBreakerConfig:
+      baseConfig: default
+
+admin-service-url: "http://localhost:8005"
