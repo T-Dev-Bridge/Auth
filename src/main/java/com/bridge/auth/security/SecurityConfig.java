@@ -126,6 +126,7 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/api/no-auth/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/auth/validate")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/health-check")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/refresh-token")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/circuitbreaker-health-check")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll();
