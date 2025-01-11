@@ -94,6 +94,9 @@ public class AuthService implements UserDetailsService {
     }
 
 
+    /**
+     * 토큰 재발급 프로세스
+     */
     private boolean processRefreshToken(RefreshTokenDto refreshTokenDto, HttpServletResponse response) throws JsonProcessingException{
         CommonResponseDto<ManagerDto> CommonResponseDto = this.adminClient.getManagerById(refreshTokenDto.getUserId());
         String jsonString = objectMapper.writeValueAsString(CommonResponseDto.getData());

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 인증 필터를 거치지 않을 Endpoint Controller
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
